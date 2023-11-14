@@ -16,6 +16,7 @@ class HomePage extends StatefulWidget {
 
 class _StateHomePage extends State<HomePage> {
   bool asc = true;
+  bool showDone = false;
 
   List get sortedTodos {
     List sortedTodo = List.of(todo_list);
@@ -38,53 +39,86 @@ class _StateHomePage extends State<HomePage> {
       appBar: AppBar(
         title: const Text("To-Do"),
       ),
-      body: Column(
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      body: Column(children: [
+        const SizedBox(
+          height: 30,
+        ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 100,
+              height: 40,
+              alignment: Alignment.center,
+              child: const Text(
+                "Done",
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+            Container(
+              width: 100,
+              height: 40,
+              alignment: Alignment.center,
+              child: const Text(
+                "To-Do",
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+            const Spacer(),
+            Container(
+              margin: const EdgeInsets.only(right: 20),
+              width: 150,
+              child: Column(
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        asc = asc ? false : true;
+                      });
+                    },
+                    icon: asc
+                        ? const Icon(Icons.arrow_upward_outlined)
+                        : const Icon(Icons.arrow_downward_outlined),
+                    label: asc
+                        ? const Text("Ascending")
+                        : const Text("Descending"),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        Expanded(child: DoList(sort: asc, doList: sortedTodos)),
+        Container(
+          height: 50,
+          alignment: Alignment.centerLeft,
+          child: Row(
             children: [
+              const Text("Completed tasks"),
               const Spacer(),
-              SizedBox(
-                width: 150,
+              Container(
+                margin: const EdgeInsets.only(right: 20),
                 child: Column(
                   children: [
-                    const SizedBox(
-                      height: 20,
-                    ),
                     ElevatedButton.icon(
                       onPressed: () {
                         setState(() {
-                          asc = asc ? false : true;
+                          showDone = showDone ? false : true;
                         });
                       },
-                      icon: asc
-                          ? const Icon(
-                              Icons.arrow_upward_outlined,
-                            )
-                          : const Icon(
-                              Icons.arrow_downward_outlined,
-                            ),
-                      label: asc
-                          ? const Text(
-                              "Ascending",
-                            )
-                          : const Text(
-                              "Descending",
-                            ),
-                    )
+                      icon: !showDone
+                          ? const Icon(Icons.arrow_upward_outlined)
+                          : const Icon(Icons.arrow_downward_outlined),
+                      label: showDone ? const Text("show") : const Text("hide"),
+                    ),
                   ],
                 ),
               ),
             ],
           ),
-          Flexible(
-            child: DoList(
-              sort: asc,
-              doList: sortedTodos,
-            ),
-          )
-        ],
-      ),
+        ),
+        Flexible(child: DoList(sort: asc, doList: sortedTodos, done: showDone)),
+      ]),
       floatingActionButton: FloatingActionButton(
         shape: const CircleBorder(),
         onPressed: () {
@@ -92,9 +126,7 @@ class _StateHomePage extends State<HomePage> {
               barrierDismissible: false,
               context: context,
               builder: (BuildContext context) {
-                return NewDo(
-                  addtodo: addtodo,
-                );
+                return NewDo(addtodo: addtodo);
               });
         },
         child: const Icon(Icons.add_rounded),

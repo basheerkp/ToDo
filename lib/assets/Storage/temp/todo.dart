@@ -6,7 +6,7 @@ enum Timer {
   onetime,
 }
 
-enum Category {
+enum cats {
   chore,
   bucketList,
 }
@@ -14,7 +14,7 @@ enum Category {
 class todo {
   String title;
   Timer timer;
-  Category category;
+  cats category;
 
   todo(
     this.title,

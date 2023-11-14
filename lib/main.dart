@@ -6,8 +6,11 @@ void main() {
   runApp(
     MaterialApp(
       theme: ThemeData(
-        useMaterial3: false,
-      ),
+          useMaterial3: true,
+          elevatedButtonTheme: const ElevatedButtonThemeData(
+              style: ButtonStyle(
+                  shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(7))))))),
       debugShowCheckedModeBanner: false,
       home: const HomePage(),
     ),

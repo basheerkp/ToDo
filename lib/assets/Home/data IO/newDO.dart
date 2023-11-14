@@ -15,8 +15,9 @@ class NewDo extends StatefulWidget {
 class _StateNewDo extends State<NewDo> {
   TextEditingController title = TextEditingController();
 
-  var timely;
-  var cat;
+  var timely = Timer.daily;
+
+  var cat = cats.chore;
 
   @override
   void dispose() {
@@ -36,6 +37,9 @@ class _StateNewDo extends State<NewDo> {
               height: 40,
             ),
             TextField(
+              onTapOutside: (context) {
+                FocusManager.instance.primaryFocus?.unfocus();
+              },
               decoration: const InputDecoration(
                 hintText: "todo name",
               ),
@@ -51,14 +55,14 @@ class _StateNewDo extends State<NewDo> {
                 DropdownMenu(
                   width: MediaQuery.sizeOf(context).width / 2,
                   dropdownMenuEntries: const [
-                    DropdownMenuEntry(value: "daily", label: "Daily"),
-                    DropdownMenuEntry(value: "weekly", label: "Weekly"),
-                    DropdownMenuEntry(value: "monthly", label: "Monthly"),
-                    DropdownMenuEntry(value: "yearly", label: "Yearly"),
-                    DropdownMenuEntry(value: "once", label: "Only Once"),
+                    DropdownMenuEntry(value: Timer.daily, label: "Daily"),
+                    DropdownMenuEntry(value: Timer.weekly, label: "Weekly"),
+                    DropdownMenuEntry(value: Timer.monthly, label: "Monthly"),
+                    DropdownMenuEntry(value: Timer.yearly, label: "Yearly"),
+                    DropdownMenuEntry(value: Timer.onetime, label: "Only Once"),
                   ],
-                  initialSelection: "once",
-                  onSelected: (value) => {timely = value},
+                  initialSelection: Timer.daily,
+                  onSelected: (value) => {timely = (value ?? timely)},
                 ),
               ],
             ),
@@ -69,11 +73,12 @@ class _StateNewDo extends State<NewDo> {
                 DropdownMenu(
                   width: MediaQuery.sizeOf(context).width / 2,
                   dropdownMenuEntries: const [
-                    DropdownMenuEntry(value: "chore", label: "Chore"),
-                    DropdownMenuEntry(value: "bucket", label: "Bucket list"),
+                    DropdownMenuEntry(value: cats.chore, label: "Chore"),
+                    DropdownMenuEntry(
+                        value: cats.bucketList, label: "Bucket list"),
                   ],
-                  initialSelection: "chore",
-                  onSelected: (value) => {cat = value},
+                  initialSelection: cats.chore,
+                  onSelected: (value) => {cat = (value ?? cat)},
                 ),
               ],
             ),
@@ -127,8 +132,8 @@ class _StateNewDo extends State<NewDo> {
                       });
                     } else {
                       widget.addtodo(
-                          todo(title.text, Timer.monthly, Category.bucketList));
-
+                        todo(title.text, timely, cat),
+                      );
                       Navigator.of(context).pop();
                     }
                   },

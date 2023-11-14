@@ -31,14 +31,35 @@ class _DoItemState extends State<DoItem> {
                 Icons.circle_outlined,
               ),
             ),
-            Text(
-              widget.current.title,
-              style: GoogleFonts.inter(
-                color: Colors.black,
+            const SizedBox(
+              width: 50,
+            ),
+            Container(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                widget.current.title,
+                style: GoogleFonts.inter(
+                  color: Colors.black,
+                ),
               ),
             ),
-            const Spacer(), widget.doIcon,
-            // IconButton(onPressed: () {}, icon: widget.doIcon)
+            const Spacer(),
+            TextButton(
+              onPressed: () {},
+              style: const ButtonStyle(
+                foregroundColor: MaterialStatePropertyAll(
+                  Colors.blue,
+                ),
+              ),
+              child: Text(widget.current.timer.toString().substring(6)),
+            ),
+            const SizedBox(
+              width: 40,
+            ),
+            IconButton(
+              icon: widget.doIcon,
+              onPressed: () {},
+            ),
           ],
         ),
       ),
