@@ -15,10 +15,12 @@ class todo {
   String title;
   Timer timer;
   cats category;
+  bool done;
 
   todo(
     this.title,
     this.timer,
-    this.category,
-  );
+    this.category, {
+    this.done = false,
+  });
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:todo/assets/Storage/temp/todo.dart';
 
 class NewDo extends StatefulWidget {
-  NewDo({super.key, required this.addtodo});
+  const NewDo({super.key, required this.addtodo});
 
   final Function addtodo;
 
@@ -29,6 +29,7 @@ class _StateNewDo extends State<NewDo> {
   Widget build(BuildContext context) {
     return Center(
       child: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         child: AlertDialog(
           shape: ContinuousRectangleBorder(
               borderRadius: BorderRadius.circular(19)),
@@ -132,7 +133,7 @@ class _StateNewDo extends State<NewDo> {
                       });
                     } else {
                       widget.addtodo(
-                        todo(title.text, timely, cat),
+                        todo(title.text, timely, cat, done: false),
                       );
                       Navigator.of(context).pop();
                     }

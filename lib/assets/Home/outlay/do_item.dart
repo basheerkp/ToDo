@@ -3,8 +3,16 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:todo/assets/Storage/temp/todo.dart';
 
 class DoItem extends StatefulWidget {
-  const DoItem({super.key, required this.current, required this.doIcon});
+  const DoItem({
+    super.key,
+    required this.current,
+    required this.doIcon,
+    required this.number,
+    required this.donefunction,
+  });
 
+  final void Function(int index) donefunction;
+  final int number;
   final todo current;
   final Icon doIcon;
 
@@ -24,9 +32,12 @@ class _DoItemState extends State<DoItem> {
             shape: const RoundedRectangleBorder(),
             shadowColor: Colors.grey),
         child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                widget.donefunction(widget.number);
+              },
               icon: const Icon(
                 Icons.circle_outlined,
               ),
