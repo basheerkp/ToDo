@@ -8,7 +8,7 @@ class Completed extends StatefulWidget {
 }
 
 class _CompletedState extends State<Completed> {
-  void tododone(int index) {
+  void undone(int index) {
     setState(() {
       todo_list.add(done_list[index]);
       done_list.removeAt(index);
@@ -20,32 +20,23 @@ class _CompletedState extends State<Completed> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          decoration: const BoxDecoration(
-              color: Colors.blue,
-              borderRadius: BorderRadius.all(Radius.circular(21))),
-          height: 50,
-          margin: const EdgeInsets.all(20),
-          alignment: Alignment.centerLeft,
-          child: const Row(
-            children: [
-              SizedBox(
-                width: 50,
-              ),
-              Text(
-                "Completed tasks",
-                style: TextStyle(color: Colors.white),
-              ),
-              Spacer(),
-            ],
-          ),
+        const SizedBox(
+          height: 78,
         ),
-        DoList(
-          doList: done_list,
-          shown: true,
-          donefunction: tododone,
-          sort: false,
-        )
+        done_list.isEmpty
+            ? Container(
+                alignment: Alignment.center,
+                height: MediaQuery.of(context).size.height - 295,
+                child: Text(
+                  "NO COMPLETED TASKS ",
+                  style: GoogleFonts.inter(fontSize: 40, color: Colors.white),
+                ))
+            : DoList(
+                doList: done_list,
+                shown: true,
+                donefunction: undone,
+                sort: false,
+              )
       ],
     );
   }

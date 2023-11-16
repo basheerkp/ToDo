@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:todo/assets/Home/data%20IO/repeatchanger.dart';
+import 'package:todo/assets/Home/data%20IO/titlechange.dart';
 import 'package:todo/assets/Storage/temp/todo.dart';
 
 class DoItem extends StatefulWidget {
-  const DoItem({
+  DoItem({
     super.key,
     required this.current,
     required this.doIcon,
@@ -13,8 +15,8 @@ class DoItem extends StatefulWidget {
 
   final void Function(int index) donefunction;
   final int number;
-  final todo current;
-  final Icon doIcon;
+  todo current;
+  final IconData doIcon;
 
   @override
   State<DoItem> createState() => _DoItemState();
@@ -23,20 +25,30 @@ class DoItem extends StatefulWidget {
 class _DoItemState extends State<DoItem> {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shadowColor: Colors.grey,
+    return AnimatedContainer(
+      decoration: BoxDecoration(
+          border: Border.all(color: const Color.fromARGB(255, 247, 239, 229))),
+      duration: const Duration(seconds: 2),
       child: TextButton(
-        onPressed: () {},
+        onPressed: () {
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                return ChangeTitle(currentdo: widget.current);
+              });
+        },
         style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.white,
-            shape: const RoundedRectangleBorder(),
-            shadowColor: Colors.grey),
+          backgroundColor: const Color.fromARGB(255, 16, 16, 16),
+          shape: const RoundedRectangleBorder(),
+        ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
+              color: Colors.white,
               onPressed: () {
-                widget.donefunction(widget.number);
+                widget.donefunction(widget.number - 1);
               },
               icon: const Icon(
                 Icons.circle_outlined,
@@ -50,27 +62,43 @@ class _DoItemState extends State<DoItem> {
               child: Text(
                 widget.current.title,
                 style: GoogleFonts.inter(
-                  color: Colors.black,
+                  color: Colors.white,
                 ),
               ),
             ),
             const Spacer(),
             TextButton(
-              onPressed: () {},
+              onPressed: () async {
+                await showDialog(
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (BuildContext context) {
+                      return ChangeTimer(
+                        currentdo: widget.current,
+                      );
+                    });
+                setState(() {
+                  widget.current = widget.current;
+                });
+              },
               style: const ButtonStyle(
                 foregroundColor: MaterialStatePropertyAll(
-                  Colors.blue,
+                  Colors.white,
                 ),
               ),
-              child: Text(widget.current.timer.toString().substring(6)),
-            ),
-            const SizedBox(
-              width: 40,
-            ),
-            IconButton(
-              icon: widget.doIcon,
-              onPressed: () {},
-            ),
+              child: Row(
+                children: [
+                  Text(widget.current.timer
+                      .toString()
+                      .substring(6)
+                      .toUpperCase()),
+                  Icon(
+                    widget.doIcon,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
+            )
           ],
         ),
       ),

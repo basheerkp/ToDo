@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../Storage/temp/datas.dart';
 import '../Storage/temp/todo.dart';
@@ -19,18 +20,14 @@ class HomePage extends StatefulWidget {
 
 class _StateHomePage extends State<HomePage> {
   bool done = false;
-
-  void addtodo(todo newobj) {
-    setState(() {
-      todo_list.add(newobj);
-    });
-  }
+  Color LineColor = const Color.fromARGB(255, 59, 86, 31);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text("To-Do"),
+        title: const Center(child: Text("")),
       ),
       body: Column(
         mainAxisSize: MainAxisSize.min,
@@ -38,51 +35,77 @@ class _StateHomePage extends State<HomePage> {
           Row(
             children: [
               Container(
-                  decoration: BoxDecoration(
-                      color: Colors.grey,
-                      border: Border.all(color: Colors.blue, width: 2),
-                      borderRadius: BorderRadius.circular(7)),
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(7)),
                   height: 60,
                   width: MediaQuery.of(context).size.width / 2,
                   child: TextButton(
+                    style: const ButtonStyle(
+                      animationDuration: Duration.zero,
+                    ),
                     onPressed: () {
                       setState(() {
                         done = false;
                       });
                     },
-                    child: const Text("on-going"),
+                    child: Column(
+                      children: [
+                        Text(
+                          "ON - GOING",
+                          style: GoogleFonts.spaceGrotesk(
+                            fontSize: 25,
+                            color: Colors.white,
+                            letterSpacing: 3,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Container(
+                          height: 3,
+                          width: 170,
+                          decoration: BoxDecoration(
+                              color: done ? Colors.white : LineColor),
+                        )
+                      ],
+                    ),
                   )),
               Container(
-                  decoration: BoxDecoration(
-                      color: Colors.grey,
-                      border: Border.all(color: Colors.blue, width: 2),
-                      borderRadius: BorderRadius.circular(7)),
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(7)),
                   height: 60,
                   width: MediaQuery.of(context).size.width / 2,
                   child: TextButton(
+                    style: const ButtonStyle(
+                      animationDuration: Duration.zero,
+                    ),
                     onPressed: () {
                       setState(() {
                         done = true;
                       });
                     },
-                    child: const Text("completed"),
+                    child: Column(
+                      children: [
+                        Text(
+                          "COMPLETED",
+                          style: GoogleFonts.spaceGrotesk(
+                            fontSize: 25,
+                            color: Colors.white,
+                            letterSpacing: 3,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Container(
+                          height: 3,
+                          width: 170,
+                          decoration: BoxDecoration(
+                              color: done ? LineColor : Colors.white),
+                        )
+                      ],
+                    ),
                   )),
             ],
           ),
           done ? const Completed() : const NotCompleted()
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        shape: const CircleBorder(),
-        onPressed: () {
-          showDialog(
-              barrierDismissible: false,
-              context: context,
-              builder: (BuildContext context) {
-                return NewDo(addtodo: addtodo);
-              });
-        },
-        child: const Icon(Icons.add_rounded),
       ),
     );
   }

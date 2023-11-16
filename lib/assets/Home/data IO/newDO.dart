@@ -15,9 +15,35 @@ class NewDo extends StatefulWidget {
 class _StateNewDo extends State<NewDo> {
   TextEditingController title = TextEditingController();
 
-  var timely = Timer.daily;
+  Timer timely = Timer.onetime;
 
   var cat = cats.chore;
+
+  var overlayEntry = OverlayEntry(
+    builder: (BuildContext context) {
+      return Container(
+        alignment: Alignment.bottomCenter,
+        child: Dismissible(
+          key: const Key("xyz"),
+          child: Container(
+            margin: const EdgeInsets.all(10),
+            decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(12))),
+            alignment: Alignment.center,
+            height: 70,
+            child: Text(
+              "title can not be null".toUpperCase(),
+              style: const TextStyle(
+                fontSize: 30,
+                color: Colors.white,
+                decoration: TextDecoration.none,
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  );
 
   @override
   void dispose() {
@@ -31,19 +57,25 @@ class _StateNewDo extends State<NewDo> {
       child: SingleChildScrollView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         child: AlertDialog(
-          shape: ContinuousRectangleBorder(
-              borderRadius: BorderRadius.circular(19)),
+          scrollable: true,
+          elevation: 0,
+          backgroundColor: const Color.fromARGB(255, 16, 16, 16),
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(7)),
+              side: BorderSide(color: Color.fromARGB(255, 247, 239, 229))),
           actions: [
             const SizedBox(
               height: 40,
             ),
             TextField(
+              style: const TextStyle(
+                color: Color.fromARGB(255, 247, 239, 229),
+              ),
+              cursorColor: Colors.white,
               onTapOutside: (context) {
                 FocusManager.instance.primaryFocus?.unfocus();
               },
-              decoration: const InputDecoration(
-                hintText: "todo name",
-              ),
+              decoration: const InputDecoration(hintText: "Task"),
               controller: title,
             ),
             const SizedBox(
@@ -51,7 +83,9 @@ class _StateNewDo extends State<NewDo> {
             ),
             Row(
               children: [
-                const Text("Recurrence"),
+                const Text(
+                  "Recurrence",
+                ),
                 const Spacer(),
                 DropdownMenu(
                   width: MediaQuery.sizeOf(context).width / 2,
@@ -62,24 +96,8 @@ class _StateNewDo extends State<NewDo> {
                     DropdownMenuEntry(value: Timer.yearly, label: "Yearly"),
                     DropdownMenuEntry(value: Timer.onetime, label: "Only Once"),
                   ],
-                  initialSelection: Timer.daily,
+                  initialSelection: Timer.onetime,
                   onSelected: (value) => {timely = (value ?? timely)},
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                const Text("Category"),
-                const Spacer(),
-                DropdownMenu(
-                  width: MediaQuery.sizeOf(context).width / 2,
-                  dropdownMenuEntries: const [
-                    DropdownMenuEntry(value: cats.chore, label: "Chore"),
-                    DropdownMenuEntry(
-                        value: cats.bucketList, label: "Bucket list"),
-                  ],
-                  initialSelection: cats.chore,
-                  onSelected: (value) => {cat = (value ?? cat)},
                 ),
               ],
             ),
@@ -88,58 +106,55 @@ class _StateNewDo extends State<NewDo> {
             ),
             Row(
               children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text(
-                    "Cancel",
+                Container(
+                  width: 100,
+                  height: 40,
+                  decoration:
+                      BoxDecoration(border: Border.all(color: Colors.white)),
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text(
+                      "Cancel",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ),
                 const Spacer(),
-                TextButton(
-                  onPressed: () {
-                    if (title.text.isEmpty) {
-                      var overlayEntry = OverlayEntry(
-                        builder: (BuildContext context) {
-                          return Container(
-                            alignment: Alignment.bottomCenter,
-                            child: Dismissible(
-                              key: const Key("xyz"),
-                              child: Container(
-                                margin: const EdgeInsets.all(10),
-                                decoration: const BoxDecoration(
-                                    color: Colors.grey,
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(12))),
-                                alignment: Alignment.center,
-                                height: 70,
-                                child: const Text(
-                                  "todo title is null",
-                                  style: TextStyle(
-                                    fontSize: 35,
-                                    color: Colors.white,
-                                    decoration: TextDecoration.none,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                      Overlay.of(context).insert(overlayEntry);
-                      Future.delayed(const Duration(seconds: 3), () {
-                        overlayEntry.remove();
-                      });
-                    } else {
-                      widget.addtodo(
-                        todo(title.text, timely, cat, done: false),
-                      );
-                      Navigator.of(context).pop();
-                    }
-                  },
-                  child: const Text(
-                    "Save",
+                Container(
+                  width: 100,
+                  height: 40,
+                  decoration:
+                      BoxDecoration(border: Border.all(color: Colors.white)),
+                  child: TextButton(
+                    onPressed: () {
+                      if (title.text.isEmpty) {
+                        Overlay.of(context).insert(overlayEntry);
+                        Future.delayed(const Duration(seconds: 3), () {
+                          overlayEntry.remove();
+                        });
+                      } else {
+                        widget.addtodo(
+                          todo(
+                              title.text.toUpperCase(),
+                              timely,
+                              [
+                                Timer.yearly,
+                                Timer.monthly,
+                                Timer.weekly,
+                                Timer.daily
+                              ].contains(timely)
+                                  ? cats.chore
+                                  : cats.bucketList),
+                        );
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    child: const Text(
+                      "Save",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 )
               ],

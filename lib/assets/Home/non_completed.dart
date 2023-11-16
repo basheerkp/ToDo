@@ -11,96 +11,114 @@ class _NotCompletedState extends State<NotCompleted> {
   bool asc = true;
   bool showDone = false;
 
-  List get sortedTodos {
-    List sortedTodo = List.of(todo_list);
-    sortedTodo.sort((a, b) {
-      final bComesAfterA = a.title.compareTo(b.title);
-      return asc ? bComesAfterA : -bComesAfterA;
+  void addtodo(todo newobj) {
+    setState(() {
+      todo_list.add(newobj);
     });
-    return sortedTodo;
   }
 
   void tododone(int index) {
-    print(done_list.last);
     setState(() {
-      done_list.add(todo_list[index]);
+      done_list.insert(0, todo_list[index]);
       todo_list.removeAt(index);
     });
+  }
+
+  List get sortedTodos {
+    todo_list.sort((a, b) {
+      final bComesAfterA = a.title.compareTo(b.title);
+      return asc ? bComesAfterA : -bComesAfterA;
+    });
+    return todo_list;
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          margin: const EdgeInsets.all(20),
-          decoration: const BoxDecoration(
-              color: Colors.blue,
-              borderRadius: BorderRadius.all(Radius.circular(22))),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 100,
-                height: 50,
-                alignment: Alignment.center,
-                child: const Text(
-                  "Done",
-                  style: TextStyle(fontSize: 20, color: Colors.white),
-                ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Spacer(),
+            Container(
+              margin: const EdgeInsets.only(right: 40, top: 10, bottom: 20),
+              width: 150,
+              child: ElevatedButton.icon(
+                style: ButtonStyle(
+                    shadowColor: asc
+                        ? const MaterialStatePropertyAll(Colors.blue)
+                        : const MaterialStatePropertyAll(Colors.red),
+                    elevation: const MaterialStatePropertyAll(4),
+                    backgroundColor: const MaterialStatePropertyAll(
+                        Color.fromARGB(255, 16, 16, 16))),
+                onPressed: () {
+                  setState(() {
+                    asc = asc ? false : true;
+                  });
+                },
+                icon: asc
+                    ? const Icon(
+                        Icons.arrow_upward_outlined,
+                        color: Colors.white,
+                      )
+                    : const Icon(
+                        Icons.arrow_downward_outlined,
+                        color: Colors.white,
+                      ),
+                label: asc
+                    ? const Text(
+                        "Ascending",
+                        style: TextStyle(color: Colors.white),
+                      )
+                    : const Text(
+                        "Descending",
+                        style: TextStyle(color: Colors.white),
+                      ),
               ),
-              Container(
-                width: 100,
-                height: 40,
-                alignment: Alignment.center,
-                child: const Text(
-                  "To-Do",
-                  style: TextStyle(fontSize: 20, color: Colors.white),
-                ),
-              ),
-              const Spacer(),
-              Container(
-                margin: const EdgeInsets.only(right: 20),
-                width: 150,
-                child: ElevatedButton.icon(
-                  style: const ButtonStyle(
-                      backgroundColor: MaterialStatePropertyAll(Colors.blue)),
-                  onPressed: () {
-                    setState(() {
-                      asc = asc ? false : true;
-                    });
-                  },
-                  icon: asc
-                      ? const Icon(
-                          Icons.arrow_upward_outlined,
-                          color: Colors.white,
-                        )
-                      : const Icon(
-                          Icons.arrow_downward_outlined,
-                          color: Colors.white,
-                        ),
-                  label: asc
-                      ? const Text(
-                          "Ascending",
-                          style: TextStyle(color: Colors.white),
-                        )
-                      : const Text(
-                          "Descending",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
         sortedTodos.isEmpty
-            ? const Text("no tasks found")
-            : DoList(
-                sort: asc,
-                doList: sortedTodos,
-                donefunction: tododone,
+            ? Container(
+                alignment: Alignment.center,
+                height: MediaQuery.of(context).size.height - 295,
+                child: Text(
+                  "NO TASKS",
+                  style: GoogleFonts.inter(fontSize: 50, color: Colors.white),
+                ))
+            : SizedBox(
+                height: MediaQuery.of(context).size.height - 295,
+                child: DoList(
+                  sort: asc,
+                  doList: sortedTodos,
+                  donefunction: tododone,
+                ),
               ),
+        Container(
+          margin: const EdgeInsets.only(right: 15, bottom: 15),
+          width: 80,
+          height: 50,
+          child: ElevatedButton(
+            style: const ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll(
+                    Color.fromARGB(255, 247, 239, 229))),
+            onPressed: () {
+              showDialog(
+                  barrierDismissible: false,
+                  context: context,
+                  builder: (BuildContext context) {
+                    return NewDo(addtodo: addtodo);
+                  });
+            },
+            child: const Icon(
+              Icons.add_rounded,
+              color: Color.fromARGB(255, 16, 16, 16),
+            ),
+          ),
+        ),
       ],
     );
   }
